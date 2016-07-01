@@ -1,0 +1,6 @@
+[package]
+name = "playing_with_macros"
+version = "0.1.0"
+authors = ["Wlaeder"]
+
+[dependencies]
