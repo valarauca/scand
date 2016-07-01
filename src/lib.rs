@@ -11,15 +11,19 @@ macro_rules! collect_fmt {
     }}
 }
 
-#[inline]
-fn append_arg(s: &mut String, args: &Vec<String>, index: usize ) {
-    if args.len() == index {
-        let x = format!("Out of range on %{}", index );
-        s.push_str(&x);
-    } else {
-        s.push_str( &args[index] );
-    }
+
+//handle adding things to the text
+macro_rules! append {
+    ($out_buffer:expr,$args:expr,$index:expr) => {{
+        if $args.len() == $index {
+            let x = format!("Out of range on %{}", $index );
+            $out_buffer.push_str(&x);
+        } else {
+            $out_buffer.push_str( &$args[$index] );
+        }
+    }}
 }
+
 
 macro_rules! scand {
     ($a:expr, $($b:expr),+) => {{
@@ -35,16 +39,16 @@ macro_rules! scand {
                         out.push_str(&x);
                         break;
                     },
-                    Option::Some('0') => append_arg(&mut out, &args, 0),
-                    Option::Some('1') => append_arg(&mut out, &args, 1),
-                    Option::Some('2') => append_arg(&mut out, &args, 2),
-                    Option::Some('3') => append_arg(&mut out, &args, 3),
-                    Option::Some('4') => append_arg(&mut out, &args, 4),
-                    Option::Some('5') => append_arg(&mut out, &args, 5),
-                    Option::Some('6') => append_arg(&mut out, &args, 6),
-                    Option::Some('7') => append_arg(&mut out, &args, 7),
-                    Option::Some('8') => append_arg(&mut out, &args, 8),
-                    Option::Some('9') => append_arg(&mut out, &args, 9),
+                    Option::Some('0') => append!(out, args, 0),
+                    Option::Some('1') => append!(out, args, 1),
+                    Option::Some('2') => append!(out, args, 2),
+                    Option::Some('3') => append!(out, args, 3),
+                    Option::Some('4') => append!(out, args, 4),
+                    Option::Some('5') => append!(out, args, 5),
+                    Option::Some('6') => append!(out, args, 6),
+                    Option::Some('7') => append!(out, args, 7),
+                    Option::Some('8') => append!(out, args, 8),
+                    Option::Some('9') => append!(out, args, 9),
                     Option::Some('%') => out.push('%'),
                     Option::Some(x) => {
                         let x  = format!("Illegal escape sequence: \"%{}\". Please use values 0-9", x);
