@@ -1,4 +1,34 @@
 
+
+//This vectorizes testing for equality across an array
+macro_rules! vec_eq {
+    ($a:expr, $b:expr) => (true);
+    ($a:expr, $b:expr, $curr:expr) => ( ($a[$curr]==$b[$curr]) & vec_eq!($a,$b) );
+    ($a:expr, $b:expr, $curr:expr $(, $tail:expr)*) => ( ($a[$curr]==$b[$curr]) & vec_eq!($a,$b,$($tail),*) );
+}
+#[test]
+fn test_vectorize() {
+
+    //all index's
+    let test_0: [usize;10] = [0,5,10,15,20,25,30,35,40,45];
+    let test_1: [usize;10] = [0,5,10,15,20,25,30,35,40,45];
+    let x = vec_eq!(test_0,test_1,0,1,2,3,4,5,6,7,8,9);
+    assert!( x );
+
+    //skip index 5
+    let test_0: [usize;10] = [0,5,10,15,20,2000,30,35,40,45];
+    let test_1: [usize;10] = [0,5,10,15,20,25,30,35,40,45];
+    let x = vec_eq!(test_0,test_1,0,1,2,3,4,6,7,8,9);
+    assert!( x );
+
+    //include index 5
+    let test_0: [usize;10] = [0,5,10,15,20,2000,30,35,40,45];
+    let test_1: [usize;10] = [0,5,10,15,20,25,30,35,40,45];
+    let x = vec_eq!(test_0,test_1,0,1,2,3,4,5,6,7,8,9);
+    assert!( ! x );
+}
+
+
 //collect debug information
 macro_rules! collect_fmt {
     ($($b:expr),+) => {{
